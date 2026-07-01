@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Datenbank-Optimierung — Vortex Tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg-alt: #0d1219;
+    --surface: #111826;
+    --border: #1e2836;
+    --border-bright: #2a374a;
+    --text: #e6ecf3;
+    --text-dim: #97a5b8;
+    --text-faint: #5c6b81;
+    --accent: #22d3ee;
+    --accent-soft: rgba(34, 211, 238, 0.1);
+    --danger: #f87171;
+    --danger-soft: rgba(248, 113, 113, 0.08);
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, 0.08);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 85% 10%, rgba(34, 211, 238, 0.04), transparent 45%);
+    pointer-events: none;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  header { background: rgba(10, 14, 20, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+  .logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+  .logo .dim { color: var(--text-dim); font-weight: 500; }
+  .back-link { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; }
+
+  .page-title-block { padding: 60px 0 40px; }
+  .page-tag { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; display: block; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.5rem; letter-spacing: -0.02em; }
+
+  .case-study { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; }
+  .case-meta { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-faint); }
+  .case-meta .tech { color: var(--accent); }
+
+  h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 16px; font-weight: 600; }
+  p { color: var(--text-dim); margin-bottom: 20px; }
+
+  .section-subheading { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text); font-weight: 600; margin-top: 24px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .code-box { display: block; margin: 16px 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-family: var(--font-mono); font-size: 0.85rem; }
+  .code-header { padding: 8px 16px; font-size: 0.75rem; }
+  .code-header.bad { background: var(--danger-soft); color: #fca5a5; }
+  .code-header.good { background: var(--success-soft); color: #6ee7b7; }
+  pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
+
+  .metric-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--bg-alt); border: 1px solid var(--border-bright); padding: 12px 20px; border-radius: 8px; margin-top: 16px; }
+  .metric-badge .label { font-size: 0.82rem; color: var(--text-faint); }
+  .metric-badge .val { font-family: var(--font-mono); font-weight: 600; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="../index.html" class="logo">VORTEX<span class="dim">TECH</span></a>
+      <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-title-block">
+    <span class="page-tag">// SQL Tuning</span>
+    <h1>Datenbank Case Studies</h1>
+  </div>
+
+  <article class="case-study">
+    <div class="case-meta">
+      <span class="tech">SQL Server / PostgreSQL</span>
+      <span>Case Study #3</span>
+    </div>
+    <h2>Composite Index gegen Full Table Scan</h2>
+    <p>
+      <strong>Das Problem:</strong> Eine Abfrage auf eine Tabelle mit 2,4 Millionen Zeilen filterte nach `Status` und `ErstelltAm`. Da kein passender Index existierte, musste die Datenbank bei jedem Aufruf die komplette Festplatte scannen (Full Table Scan), um die passenden Ergebnisse zu finden. Das blockierte die CPU und dauerte fast 5 Sekunden.
+    </p>
+
+    <div class="section-subheading">Ausgangslage (Kein Index / Table Scan)</div>
+    <div class="code-box">
+      <div class="code-header bad">✕ Execution Plan: Clustered Index Scan (2,4 Mio. Reads, 4.800 ms)</div>
+      <pre><code>SELECT Id, KundenNummer, Betrag 
+FROM Bestellungen 
+WHERE Status = 'Aktiv' AND ErstelltAm >= '2026-01-01';</code></pre>
+    </div>
+
+    <div class="section-subheading">Die Optimierung (Verbundindex)</div>
+    <div class="code-box">
+      <div class="code-header good">✓ Index-Definition für punktgenauen Datenzugriff</div>
+      <pre><code>-- Erstellt einen mehrspaltigen Index, der die WHERE-Klausel exakt abdeckt
+CREATE INDEX IX_Bestellungen_Status_ErstelltAm 
+ON Bestellungen (Status, ErstelltAm) 
+INCLUDE (KundenNummer, Betrag);</code></pre>
+    </div>
+
+    <p style="margin-top: 20px;">
+      <strong>Die Lösung:</strong> Durch die Erstellung eines Composite Index (Verbundindex) springt die Datenbank über einen B-Tree direkt zu den gesuchten Zeilen (Index Seek). Das Schlüsselwort `INCLUDE` sorgt dafür, dass auch die restlichen Spalten direkt im Index liegen. Ein Zugriff auf die Haupttabelle entfällt komplett (Covering Index).
+    </p>
+
+    <div class="metric-badge">
+      <span class="label">Performance-Gewinn:</span>
+      <span class="val">2400× schneller (nur noch 2 ms)</span>
+    </div>
+  </article>
+</main>
+
+</body>
+</html>
