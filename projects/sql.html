@@ -29,6 +29,7 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
 
   body::before {
@@ -40,13 +41,37 @@
   }
 
   a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
   .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
   header { background: rgba(10, 14, 20, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; gap: 20px; flex-wrap: wrap; }
   .logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
   .logo .dim { color: var(--text-dim); font-weight: 500; }
-  .back-link { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; }
+
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .back-link { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .back-link:hover { color: #67e8f9; }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    padding: 4px 6px;
+  }
+  .lang-switch a {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--text-faint);
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .lang-switch a:hover { color: var(--text); }
+  .lang-switch a.active { background: var(--accent-soft); color: var(--accent); }
 
   .page-title-block { padding: 60px 0 40px; }
   .page-tag { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; display: block; }
@@ -70,6 +95,14 @@
   .metric-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--bg-alt); border: 1px solid var(--border-bright); padding: 12px 20px; border-radius: 8px; margin-top: 16px; }
   .metric-badge .label { font-size: 0.82rem; color: var(--text-faint); }
   .metric-badge .val { font-family: var(--font-mono); font-weight: 600; color: var(--accent); }
+
+  footer { text-align: center; padding: 40px 0; color: var(--text-faint); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+
+  @media (max-width: 600px) {
+    nav { flex-direction: column; align-items: flex-start; }
+    h1 { font-size: 2rem; }
+    .case-study { padding: 24px; }
+  }
 </style>
 </head>
 <body>
@@ -78,7 +111,13 @@
   <div class="container">
     <nav>
       <a href="../index.html" class="logo">VORTEX<span class="dim">TECH</span></a>
-      <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+        <div class="lang-switch" aria-label="Sprache wählen">
+          <a href="#" class="active" aria-current="page">DE</a>
+          <a href="../en/projects/sql.html">EN</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -126,6 +165,12 @@ INCLUDE (KundenNummer, Betrag);</code></pre>
     </div>
   </article>
 </main>
+
+<footer>
+  <div class="container">
+    © 2026 Vortex Tech. Alle Case Studies basieren auf realen Performance-Messungen.
+  </div>
+</footer>
 
 </body>
 </html>
