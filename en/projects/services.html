@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Websites & Custom Software — Vortex Tech</title>
+<meta name="description" content="Custom websites and small programs built from the ground up: online stores, websites for tradespeople & local businesses, and modern landing pages. Clean code instead of website builders.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   VORTEX TECH — services.html
+   Shares the design tokens of index.html (dark tech theme,
+   cyan/blue accent). Adds page-specific components:
+   split-panel (business vs. tech), code-card, specs-grid.
+   ========================================================= */
+
+:root {
+  --bg: #0a0e14;
+  --bg-alt: #0d1219;
+  --surface: #111826;
+  --surface-hover: #151d2d;
+  --border: #1e2836;
+  --border-bright: #2a374a;
+  --text: #e6ecf3;
+  --text-dim: #97a5b8;
+  --text-faint: #5c6b81;
+  --accent: #22d3ee;
+  --accent-soft: rgba(34, 211, 238, 0.1);
+  --accent-dim: #0e7490;
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.08);
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.08);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(34, 211, 238, 0.07), transparent 40%),
+    radial-gradient(circle at 85% 60%, rgba(34, 211, 238, 0.05), transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+section { position: relative; z-index: 1; }
+
+/* ---------- NAV (same as index.html) ---------- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 14, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+
+.logo span.dim { color: var(--text-dim); font-weight: 500; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.nav-links a { transition: color 0.2s ease; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a[aria-current="page"] { color: var(--accent); }
+
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  border: 1px solid var(--border-bright);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.lang-switch a {
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-faint);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.lang-switch a:hover { color: var(--text); }
+
+.lang-switch a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.nav-cta {
+  padding: 9px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+}
+
+/* ---------- BUTTONS (shared) ---------- */
+.btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #06131a;
+}
+
+.btn-primary:hover {
+  background: #67e8f9;
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border-bright);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.accent-text {
+  background: linear-gradient(90deg, var(--accent) 0%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- SECTION HEADERS (shared) ---------- */
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.section-tag::before { content: '// '; color: var(--text-faint); }
+
+h2.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  font-size: 1.02rem;
+  max-width: 640px;
+}
+
+/* ---------- SERVICES HERO ---------- */
+.svc-hero {
+  padding: 110px 0 90px;
+}
+
+.svc-hero-inner { max-width: 820px; }
+
+h1.svc-hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 26px;
+}
+
+.svc-hero-sub {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: var(--text-dim);
+  max-width: 620px;
+  margin-bottom: 40px;
+}
+
+.svc-hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---------- TEMPLATE SECTIONS ---------- */
+.template-section {
+  padding: 20px 0 100px;
+}
+
+.template-block {
+  padding: 64px 0;
+  border-top: 1px solid var(--border);
+}
+
+.template-block:first-child { border-top: none; padding-top: 0; }
+
+.template-head {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-bottom: 48px;
+}
+
+.template-num {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-faint);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+/* ---------- TEMPLATE VISUAL PREVIEW (browser mockup) ---------- */
+.preview-frame {
+  border: 1px solid var(--border-bright);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 211, 238, 0.04);
+}
+
+.preview-chrome {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border-bright);
+}
+
+.preview-url {
+  margin-left: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}
+
+.preview-body {
+  background: #f4f5f7;
+  color: #1a1d24;
+  padding: 0;
+  font-family: var(--font-body);
+}
+
+/* shared inner nav bar across all preview types */
+.preview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.preview-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.preview-navlinks {
+  display: flex;
+  gap: 16px;
+}
+
+.preview-navlinks i {
+  display: block;
+  width: 34px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.12);
+  font-style: normal;
+}
+
+.preview-cart {
+  color: #1a1d24;
+  opacity: 0.7;
+}
+
+.preview-call-btn, .preview-btn-solid, .preview-btn-outline {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.preview-call-btn {
+  background: #16a34a;
+  color: #fff;
+}
+
+.preview-btn-solid {
+  background: var(--accent-dim);
+  color: #fff;
+  display: inline-block;
+}
+
+.preview-btn-solid.small { padding: 7px 14px; font-size: 0.72rem; }
+
+.preview-btn-outline {
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #1a1d24;
+  display: inline-block;
+}
+
+/* --- Shop preview --- */
+.preview-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 28px;
+}
+
+.preview-product {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preview-product-img {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d9cfc1, #b8a88f);
+}
+
+.preview-product-img.alt {
+  background: linear-gradient(135deg, #c9d4d6, #9db3b6);
+}
+
+.preview-product-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.preview-product-price {
+  font-size: 0.76rem;
+  color: #55595f;
+  font-family: var(--font-mono);
+}
+
+.preview-product.featured .preview-buy-btn {
+  margin-top: 6px;
+  display: inline-block;
+  background: #1a1d24;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* --- Handwerker preview --- */
+.preview-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 44px 28px 52px;
+}
+
+.preview-hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.preview-hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.preview-hero-sub {
+  font-size: 0.82rem;
+  color: #55595f;
+  max-width: 340px;
+}
+
+.preview-hero-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* --- Landingpage preview (dark variant) --- */
+.preview-landing { background: #12141a; color: #eef1f5; }
+
+.preview-nav-dark { border-bottom: 1px solid rgba(255,255,255,0.08); }
+.preview-nav-dark .preview-logo { color: #eef1f5; }
+.preview-nav-dark .preview-navlinks i { background: rgba(255,255,255,0.16); }
+
+.preview-landing-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 56px 28px 64px;
+}
+
+.preview-hero-kicker.light { color: var(--accent); }
+
+.preview-hero-title.light {
+  color: #fff;
+  font-size: 1.7rem;
+}
+
+/* ---------- SPLIT PANEL: business vs. tech ---------- */
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.panel {
+  background: var(--surface);
+  padding: 32px;
+}
+
+.panel-business { background: var(--bg-alt); }
+
+.panel-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+}
+
+.panel-business .panel-label { color: var(--success); }
+.panel-tech .panel-label { color: var(--accent); }
+
+.panel-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.panel-business .panel-icon { background: var(--success-soft); border: 1px solid rgba(52, 211, 153, 0.25); }
+.panel-tech .panel-icon { background: var(--accent-soft); border: 1px solid rgba(34, 211, 238, 0.25); }
+
+.benefit-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.benefit-list li {
+  position: relative;
+  padding-left: 24px;
+  color: var(--text-dim);
+  font-size: 0.94rem;
+}
+
+.benefit-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.benefit-list li strong {
+  color: var(--text);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.98rem;
+}
+
+/* ---------- CODE CARD ---------- */
+.code-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.code-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border-bright);
+}
+
+.code-filename {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}
+
+.code-body {
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.code-body code { color: var(--text-dim); white-space: pre; }
+
+.c-kw { color: #c084fc; }
+.c-type { color: #67e8f9; }
+.c-fn { color: #60a5fa; }
+.c-str { color: #86efac; }
+.c-prop { color: var(--text); }
+
+/* ---------- SPECS GRID (metric cards) ---------- */
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.spec-item {
+  background: var(--bg);
+  padding: 20px;
+}
+
+.spec-metric {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.spec-desc {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+.spec-desc code {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  background: var(--bg-alt);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ---------- SPEC TAGS (shared style with service-tags) ---------- */
+.spec-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.spec-tags span {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 4px 9px;
+  border-radius: 5px;
+}
+
+.template-cta { width: fit-content; }
+
+/* ---------- CTA BAND (shared) ---------- */
+.cta-band {
+  padding: 90px 0;
+  border-top: 1px solid var(--border);
+}
+
+.cta-box {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-alt) 100%);
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  padding: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.cta-box h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 700;
+  max-width: 460px;
+}
+
+.cta-box p {
+  color: var(--text-dim);
+  margin-top: 12px;
+  max-width: 420px;
+}
+
+/* ---------- FOOTER (shared) ---------- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 80px 0 32px;
+  background: var(--bg-alt);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 64px;
+}
+
+.footer-brand .logo { margin-bottom: 18px; }
+
+.footer-brand p {
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  max-width: 340px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.footer-contact-item .ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.footer-contact-item a, .footer-contact-item span.value {
+  font-size: 0.92rem;
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-contact-item a:hover { color: var(--accent); }
+
+.footer-contact-item .contact-label {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  margin-bottom: 2px;
+}
+
+.footer-links a {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  margin-bottom: 14px;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.footer-bottom .status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+}
+
+.footer-bottom .status-dot::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .split-panel { grid-template-columns: 1fr; }
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .template-head { flex-direction: column; gap: 16px; }
+  .preview-shop-grid { grid-template-columns: 1fr 1fr; }
+  .preview-product:nth-child(3) { grid-column: span 2; }
+}
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .container { padding: 0 20px; }
+  nav { padding: 16px 20px; }
+  .svc-hero { padding: 72px 0 56px; }
+  .template-block { padding: 48px 0; }
+  .panel { padding: 24px; }
+  .specs-grid { grid-template-columns: 1fr; }
+  .cta-box { padding: 36px 28px; flex-direction: column; align-items: flex-start; }
+  .cta-box .btn-primary { width: 100%; justify-content: center; }
+  .template-cta { width: 100%; justify-content: center; }
+  .code-body { font-size: 0.74rem; }
+
+  .preview-nav { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+  .preview-navlinks { display: none; }
+  .preview-shop-grid { grid-template-columns: 1fr 1fr; padding: 18px; gap: 12px; }
+  .preview-product:nth-child(3) { grid-column: span 2; }
+  .preview-hero, .preview-landing-hero { padding: 32px 18px 40px; }
+  .preview-hero-title { font-size: 1.25rem; }
+  .preview-hero-title.light { font-size: 1.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="../index.html" class="logo" aria-label="Vortex Tech Home">
+      <span class="logo-mark">V</span>
+      VORTEX<span class="dim">TECH</span>
+    </a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="../index.html#services">Services</a>
+        <a href="services.html" aria-current="page">Websites</a>
+        <a href="../index.html#proof">Projects</a>
+        <a href="../index.html#kontakt">Contact</a>
+      </div>
+      <div class="lang-switch" aria-label="Select language">
+        <a href="../services.html">DE</a>
+        <a href="#" class="active" aria-current="page">EN</a>
+      </div>
+      <a href="../index.html#kontakt" class="nav-cta">Request project</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="svc-hero">
+    <div class="container">
+      <div class="svc-hero-inner">
+        <span class="eyebrow">Custom development, no website builders</span>
+        <h1 class="svc-hero-title">Custom websites<br><span class="accent-text">and small programs —<br>built from the ground up.</span></h1>
+        <p class="svc-hero-sub">
+          No WordPress theme, no Wix builder. Every site is built with clean, semantic code —
+          which means measurably faster load times, better Google rankings, and a system
+          that's built around your business instead of the other way round.
+        </p>
+        <div class="svc-hero-actions">
+          <a href="../index.html#kontakt" class="btn-primary">Request project</a>
+          <a href="#vorlagen" class="btn-secondary">See use cases</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TEMPLATE 1: E-COMMERCE ================= -->
+  <section class="template-section" id="vorlagen">
+    <div class="container">
+
+      <article class="template-block">
+        <div class="template-head">
+          <span class="template-num">01</span>
+          <div>
+            <span class="section-tag">Online Store</span>
+            <h2 class="section-title">E-commerce that doesn't lose customers at checkout.</h2>
+            <p class="section-desc">
+              Focused on speed, secure data handling, and conversion-driven checkout flows —
+              built without the plugin sprawl that slows down every third shop.
+            </p>
+          </div>
+        </div>
+
+        <!-- Visual template preview -->
+        <div class="preview-frame">
+          <div class="preview-chrome">
+            <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
+            <span class="preview-url">yourshop.com</span>
+          </div>
+          <div class="preview-body preview-shop">
+            <div class="preview-nav">
+              <span class="preview-logo">NORDLICHT</span>
+              <span class="preview-navlinks"><i></i><i></i><i></i></span>
+              <span class="preview-cart" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              </span>
+            </div>
+            <div class="preview-shop-grid">
+              <div class="preview-product">
+                <div class="preview-product-img"></div>
+                <span class="preview-product-title">Ceramic Vase</span>
+                <span class="preview-product-price">$52.00</span>
+              </div>
+              <div class="preview-product">
+                <div class="preview-product-img alt"></div>
+                <span class="preview-product-title">Linen Cushion</span>
+                <span class="preview-product-price">$36.00</span>
+              </div>
+              <div class="preview-product featured">
+                <div class="preview-product-img"></div>
+                <span class="preview-product-title">Wooden Tray</span>
+                <span class="preview-product-price">$60.00</span>
+                <span class="preview-buy-btn">Add to cart</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-panel">
+          <!-- Column A: Business -->
+          <div class="panel panel-business">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </span>
+              The business case
+            </div>
+            <ul class="benefit-list">
+              <li>
+                <strong>Fewer abandoned carts.</strong> A checkout without bloated builder code
+                loads in a fraction of a second — every second of load time saved measurably
+                increases completed orders.
+              </li>
+              <li>
+                <strong>Better Google rankings.</strong> Clean, lean code without plugin bloat
+                is rated by search engines as fast and trustworthy — improving your ranking
+                against standard shop systems.
+              </li>
+              <li>
+                <strong>Lower ongoing costs.</strong> No monthly license fees for dozens of
+                plugins, no security holes from outdated third-party extensions — you pay for
+                substance, not subscription chains.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Column B: Tech -->
+          <div class="panel panel-tech">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              Tech specifications
+            </div>
+            <div class="code-card">
+              <div class="code-card-head">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                <span class="code-filename">CheckoutService.cs</span>
+              </div>
+              <pre class="code-body"><code><span class="c-kw">public async</span> <span class="c-type">Task&lt;OrderResult&gt;</span> <span class="c-fn">CompleteCheckoutAsync</span>(<span class="c-type">CartDto</span> cart)
+{
+    <span class="c-kw">using var</span> tx = <span class="c-kw">await</span> _db.Database
+        .<span class="c-fn">BeginTransactionAsync</span>();
+
+    <span class="c-kw">var</span> stock = <span class="c-kw">await</span> _inventory
+        .<span class="c-fn">ReserveAsync</span>(cart.Items);
+
+    <span class="c-kw">if</span> (!stock.<span class="c-prop">IsAvailable</span>)
+        <span class="c-kw">return</span> OrderResult.<span class="c-fn">OutOfStock</span>();
+
+    <span class="c-kw">var</span> order = <span class="c-kw">await</span> _payments
+        .<span class="c-fn">ChargeAsync</span>(cart.<span class="c-prop">Total</span>);
+
+    <span class="c-kw">await</span> tx.<span class="c-fn">CommitAsync</span>();
+    <span class="c-kw">return</span> OrderResult.<span class="c-fn">Success</span>(order);
+}</code></pre>
+            </div>
+            <div class="spec-tags">
+              <span>C# / ASP.NET Core</span>
+              <span>Transaction-safe orders</span>
+              <span>PCI-compliant payments</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="../index.html#kontakt" class="btn-primary template-cta">Request project</a>
+      </article>
+
+      <!-- ================= TEMPLATE 2: TRADESPEOPLE ================= -->
+      <article class="template-block">
+        <div class="template-head">
+          <span class="template-num">02</span>
+          <div>
+            <span class="section-tag">Tradespeople &amp; Local Businesses</span>
+            <h2 class="section-title">Found before the customer clicks away.</h2>
+            <p class="section-desc">
+              Focused on maximum visibility, fast mobile load times, and effortless contact —
+              built for customers who decide within three seconds on their phone.
+            </p>
+          </div>
+        </div>
+
+        <!-- Visual template preview -->
+        <div class="preview-frame">
+          <div class="preview-chrome">
+            <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
+            <span class="preview-url">miller-roofing.com</span>
+          </div>
+          <div class="preview-body preview-handwerk">
+            <div class="preview-nav">
+              <span class="preview-logo">Miller Roofing &amp; Co.</span>
+              <span class="preview-navlinks"><i></i><i></i><i></i></span>
+              <span class="preview-call-btn">Call now</span>
+            </div>
+            <div class="preview-hero">
+              <span class="preview-hero-kicker">Family-owned since 1994</span>
+              <span class="preview-hero-title">Your roof in safe hands</span>
+              <span class="preview-hero-sub">Restoration, repair &amp; re-roofing across the region</span>
+              <div class="preview-hero-actions">
+                <span class="preview-btn-solid">Get free quote</span>
+                <span class="preview-btn-outline">📞 (555) XXX-XXXX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-panel">
+          <div class="panel panel-business">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </span>
+              The business case
+            </div>
+            <ul class="benefit-list">
+              <li>
+                <strong>More calls, fewer bounces.</strong> A page that loads on mobile in
+                under a second keeps customers on the page instead of sending them to the
+                next search result — straight to the "Call" button.
+              </li>
+              <li>
+                <strong>Ranks higher for "tradesperson near me".</strong> Google factors load
+                time and mobile usability directly into local rankings — a lean code foundation
+                beats nearly every off-the-shelf homepage here.
+              </li>
+              <li>
+                <strong>One more quote a week.</strong> A clear path to contact with no
+                detours — one tap to call, a form without ten required fields. Less friction
+                means more inquiries that actually come through.
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-tech">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              Tech specifications
+            </div>
+            <div class="specs-grid">
+              <div class="spec-item">
+                <span class="spec-metric">&lt; 1.0s</span>
+                <span class="spec-desc">Largest Contentful Paint on mobile (4G)</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-metric">0 KB</span>
+                <span class="spec-desc">Framework overhead — pure semantic HTML/CSS</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-metric">100/100</span>
+                <span class="spec-desc">Lighthouse performance score, target</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-metric">1 Tap</span>
+                <span class="spec-desc">Click-to-call via <code>tel:</code> link, no redirect</span>
+              </div>
+            </div>
+            <div class="spec-tags">
+              <span>Semantic HTML5</span>
+              <span>Schema.org LocalBusiness</span>
+              <span>No CMS overhead</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="../index.html#kontakt" class="btn-primary template-cta">Request project</a>
+      </article>
+
+      <!-- ================= TEMPLATE 3: LANDING PAGES ================= -->
+      <article class="template-block">
+        <div class="template-head">
+          <span class="template-num">03</span>
+          <div>
+            <span class="section-tag">Modern Landing Pages &amp; Portfolios</span>
+            <h2 class="section-title">Refined design that converts into leads.</h2>
+            <p class="section-desc">
+              For service providers and agencies: interactive, high-end design with
+              measurable lead generation instead of interchangeable templates.
+            </p>
+          </div>
+        </div>
+
+        <!-- Visual template preview -->
+        <div class="preview-frame">
+          <div class="preview-chrome">
+            <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
+            <span class="preview-url">weissconsulting.com</span>
+          </div>
+          <div class="preview-body preview-landing">
+            <div class="preview-nav preview-nav-dark">
+              <span class="preview-logo">WEISS Consulting</span>
+              <span class="preview-navlinks"><i></i><i></i><i></i></span>
+              <span class="preview-btn-solid small">Book a call</span>
+            </div>
+            <div class="preview-landing-hero">
+              <span class="preview-hero-kicker light">Strategy consulting for mid-market firms</span>
+              <span class="preview-hero-title light">Clarity drives<br>growth.</span>
+              <span class="preview-btn-solid">Schedule intro call →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-panel">
+          <div class="panel panel-business">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </span>
+              The business case
+            </div>
+            <ul class="benefit-list">
+              <li>
+                <strong>Looks high-end, because it is.</strong> Custom interaction design
+                instead of a recognizable template signals a higher price tier to clients —
+                before they've read a single word.
+              </li>
+              <li>
+                <strong>Leads, not just visitors.</strong> Every section is built around one
+                action — a form, a booking, or a contact request — with measurable conversion
+                points instead of mere aesthetics.
+              </li>
+              <li>
+                <strong>Scales with the business.</strong> No template limits: new sections,
+                languages, or integrations can be added cleanly instead of fighting the
+                boundaries of a builder.
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-tech">
+            <div class="panel-label">
+              <span class="panel-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              Tech specifications
+            </div>
+            <div class="code-card">
+              <div class="code-card-head">
+                <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                <span class="code-filename">lead-form.js</span>
+              </div>
+              <pre class="code-body"><code><span class="c-kw">const</span> form = <span class="c-fn">document.querySelector</span>(<span class="c-str">'#lead-form'</span>);
+
+form.<span class="c-fn">addEventListener</span>(<span class="c-str">'submit'</span>, <span class="c-kw">async</span> (e) => {
+  e.<span class="c-fn">preventDefault</span>();
+  <span class="c-kw">const</span> data = <span class="c-kw">new</span> <span class="c-type">FormData</span>(form);
+
+  <span class="c-kw">const</span> res = <span class="c-kw">await</span> <span class="c-fn">fetch</span>(<span class="c-str">'/api/leads'</span>, {
+    method: <span class="c-str">'POST'</span>,
+    body: data
+  });
+
+  <span class="c-kw">if</span> (res.<span class="c-prop">ok</span>) {
+    <span class="c-fn">trackEvent</span>(<span class="c-str">'lead_submitted'</span>);
+    <span class="c-fn">showSuccessState</span>();
+  }
+});</code></pre>
+            </div>
+            <div class="spec-tags">
+              <span>Vanilla JS — no framework bloat</span>
+              <span>Native scroll-reveal animations</span>
+              <span>Conversion tracking included</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="../index.html#kontakt" class="btn-primary template-cta">Request project</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= CTA BAND ================= -->
+  <section class="cta-band">
+    <div class="container">
+      <div class="cta-box">
+        <div>
+          <h2>Your project doesn't fit into any of these three boxes?</h2>
+          <p>No problem — every site is planned individually. Let's have a quick chat about what you need.</p>
+        </div>
+        <a href="../index.html#kontakt" class="btn-primary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER / CONTACT ================= -->
+<footer id="kontakt">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo">
+          <span class="logo-mark">V</span>
+          VORTEX<span class="dim">TECH</span>
+        </a>
+        <p>
+          High-performance software engineering for businesses that need measurable
+          technical solutions — no buzzwords, just resilient code.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <span class="ico" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+          </span>
+          <div>
+            <span class="contact-label">Email</span>
+            <a href="mailto:vortextech.systems@gmail.com">vortextech.systems@gmail.com</a>
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <span class="ico" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          </span>
+          <div>
+            <span class="contact-label">Phone</span>
+            <span class="value">+49 XXX XXXXXXX</span>
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <span class="ico" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </span>
+          <div>
+            <span class="contact-label">GitHub</span>
+            <a href="github.com/vortextechsystems/" target="_blank" rel="noopener">github.com/vortextechsystems/</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col footer-links">
+        <h4>Pages</h4>
+        <a href="../index.html#services">Services</a>
+        <a href="services.html">Websites &amp; Programs</a>
+        <a href="../index.html#proof">Engineering Proof</a>
+        <a href="../index.html#kontakt">Contact</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Vortex Tech — Vanshraj Singh. All rights reserved.</span>
+      <span class="status-dot">Available for new projects</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
