@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unity Game Engineering — Vortex Tech</title>
+<title>Unity Performance R&D — Vortex Tech</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -29,19 +29,67 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 15% 15%, rgba(34, 211, 238, 0.05), transparent 45%);
+    pointer-events: none;
+  }
+
   a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
   .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
   header { background: rgba(10, 14, 20, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; gap: 20px; flex-wrap: wrap; }
   .logo { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
   .logo .dim { color: var(--text-dim); font-weight: 500; }
-  .back-link { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; }
 
-  .page-title-block { padding: 60px 0 40px; }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .back-link { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .back-link:hover { color: #67e8f9; }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    padding: 4px 6px;
+  }
+  .lang-switch a {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--text-faint);
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .lang-switch a:hover { color: var(--text); }
+  .lang-switch a.active { background: var(--accent-soft); color: var(--accent); }
+
+  .page-title-block { padding: 60px 0 20px; }
   .page-tag { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; display: block; }
-  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.5rem; letter-spacing: -0.02em; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.5rem; letter-spacing: -0.02em; margin-bottom: 20px; }
+
+  .rd-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 40px;
+  }
+  .rd-banner .ico { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .rd-banner p { margin: 0; color: var(--text); font-size: 0.94rem; }
+  .rd-banner strong { color: var(--accent); }
 
   .case-study { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 40px; }
   .case-meta { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-faint); }
@@ -49,7 +97,7 @@
 
   h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 16px; font-weight: 600; }
   p { color: var(--text-dim); margin-bottom: 20px; }
-  
+
   .section-subheading { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text); font-weight: 600; margin-top: 24px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
 
   .code-box { display: block; margin: 16px 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-family: var(--font-mono); font-size: 0.85rem; }
@@ -58,8 +106,34 @@
   .code-header.good { background: var(--success-soft); color: #6ee7b7; }
   pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
 
-  .status-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-soft); border: 1px solid var(--accent); padding: 8px 16px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-top: 16px; }
-  .status-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); }
+  .metric-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--bg-alt); border: 1px solid var(--border-bright); padding: 12px 20px; border-radius: 8px; margin-top: 16px; margin-right: 12px; }
+  .metric-badge .label { font-size: 0.82rem; color: var(--text-faint); }
+  .metric-badge .val { font-family: var(--font-mono); font-weight: 600; color: var(--accent); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+  .status-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  footer { text-align: center; padding: 40px 0; color: var(--text-faint); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 60px; }
+
+  @media (max-width: 600px) {
+    nav { flex-direction: column; align-items: flex-start; }
+    h1 { font-size: 2rem; }
+    .case-study { padding: 24px; }
+  }
 </style>
 </head>
 <body>
@@ -68,67 +142,108 @@
   <div class="container">
     <nav>
       <a href="../index.html" class="logo">VORTEX<span class="dim">TECH</span></a>
-      <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+        <div class="lang-switch" aria-label="Sprache wählen">
+          <a href="#" class="active" aria-current="page">DE</a>
+          <a href="../en/projects/unity.html">EN</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
 
 <main class="container">
   <div class="page-title-block">
-    <span class="page-tag">// Game Engineering</span>
-    <h1>Unity / C# Case Studies</h1>
+    <span class="page-tag">// Internal R&amp;D</span>
+    <h1>Unity Performance Showcase</h1>
   </div>
 
+  <div class="rd-banner">
+    <span class="ico" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    </span>
+    <p>
+      <strong>Hinweis:</strong> Dies ist kein Kundenauftrag, sondern ein internes R&amp;D-Projekt im Rahmen unseres
+      eigenen Steam-Titels. Es dient als Performance-Showcase und zeigt, wie tief unser Code-Optimierungs-Know-how
+      aus dem Backend- und Datenbank-Bereich auch im Game-Engineering greift.
+    </p>
+  </div>
+
+  <!-- CASE STUDY 4 -->
   <article class="case-study">
     <div class="case-meta">
-      <span class="tech">Unity DOTS / Burst Compiler</span>
-      <span>Case Study #4</span>
+      <span class="tech">Unity / C# / DOTS</span>
+      <span class="status-badge">Case Study #4 — In Entwicklung</span>
     </div>
     <h2>Unity ECS vs. MonoBehaviour Performance</h2>
     <p>
-      <strong>Das Problem:</strong> Klassische, objektorientierte GameObjects (`MonoBehaviour`) verursachen massiven Overhead durch Heap-Allokationen und verstreute Speicheradressen im RAM (Cache Misses). Ab ca. 5.000 aktiven Einheiten auf dem Bildschirm brechen die Frametimes drastisch ein.
+      <strong>Der Kontext:</strong> Für unser eigenes Steam-Spiel mussten wir entscheiden, wie wir tausende
+      gleichzeitig aktive Spielobjekte (Gegner, Projektile, Partikel-Interaktionen) verwalten. Klassisches
+      objektorientiertes MonoBehaviour-Design skaliert bei hoher Entity-Anzahl schlecht, da jede Instanz
+      individuellen Speicher-Overhead und Cache-Misses verursacht.
     </p>
 
-    <div class="section-subheading">Klassischer Ansatz (Objektorientiert)</div>
+    <div class="section-subheading">Ausgangslage (MonoBehaviour)</div>
     <div class="code-box">
-      <div class="code-header bad">✕ Jedes Objekt hält eigene Daten und Logik (Verstreut im RAM)</div>
-      <pre><code>public class Enemy : MonoBehaviour 
+      <div class="code-header bad">✕ Objektorientiert: Jede Entity ist ein eigenes GameObject mit eigenem Speicherblock</div>
+      <pre><code>public class Enemy : MonoBehaviour
 {
-    public float speed = 5f;
-    void Update() {
-        // Verursacht zehntausende CPU-Umsprünge pro Frame
-        transform.Translate(Vector3.forward * speed * Time.deltaTime); 
+    public float speed = 3f;
+    public Transform target;
+
+    void Update()
+    {
+        // Pro Frame & pro Objekt: individueller Methodenaufruf,
+        // schlechte Cache-Lokalität bei tausenden Instanzen
+        transform.position = Vector3.MoveTowards(
+            transform.position, target.position, speed * Time.deltaTime);
     }
 }</code></pre>
     </div>
 
-    <div class="section-subheading">Datenorientierter Ansatz (Entity Component System)</div>
+    <div class="section-subheading">Optimierung (ECS + Burst Compiler)</div>
     <div class="code-box">
-      <div class="code-header good">✓ Reine Datenstrukturen, parallelisiert über alle CPU-Kerne</div>
-      <pre><code>// 1. Reine Datenkomponente (Blittable Struct, kompakt im RAM arrangiert)
-public struct MoveSpeed : IComponentData { public float Value; }
-
-// 2. Isoliertes System (Nutzt den Burst Compiler und das Job-System)
-[BurstCompile]
-public partial struct MoveSystem : ISystem 
+      <div class="code-header good">✓ Datenorientiert: Kompakte Arrays, parallelisierbar, Burst-kompiliert</div>
+      <pre><code>[BurstCompile]
+public partial struct EnemyMoveJob : IJobEntity
 {
-    [BurstCompile]
-    public void OnUpdate(ref SystemState state) {
-        // Verarbeitet Millionen Transformationen direkt im schnellen CPU-Cache
-        new MoveJob().ScheduleParallel(); 
+    public float DeltaTime;
+
+    void Execute(ref LocalTransform transform, in MoveSpeed speed, in TargetPosition target)
+    {
+        // Läuft parallel über kompakte, cache-freundliche Datenarrays
+        // statt über verstreute Objektinstanzen
+        transform.Position = Vector3.MoveTowards(
+            transform.Position, target.Value, speed.Value * DeltaTime);
     }
 }</code></pre>
     </div>
 
     <p style="margin-top: 20px;">
-      <strong>Das Ziel:</strong> Umstellung auf das datenorientierte Technologie-Stack (DOTS) von Unity. Daten werden lückenlos in Arrays hinterlegt, sodass die CPU sie via SIMD-Instruktionen hocheffizient abarbeiten kann. Dies bildet das Fundament für die anspruchsvolle Performance unseres eigenen Steam-Titels.
+      <strong>Die Erkenntnis:</strong> Durch den Wechsel auf Unitys Entity Component System (DOTS) mit
+      Burst-kompilierten Jobs werden Bewegungsberechnungen parallel über mehrere CPU-Kerne verteilt und
+      profitieren von deutlich besserer Cache-Lokalität. Das Ergebnis ist eine Architektur, die auch bei
+      stark steigender Objektanzahl stabile Frametimes hält — ein direkter Beleg für dieselbe
+      Performance-Denkweise, die wir bereits bei Backend- und Datenbank-Optimierungen anwenden.
     </p>
 
-    <div class="status-badge">
-      In Vorbereitung — Benchmarks folgen mit dem nächsten Alpha-Build
+    <div class="metric-badge">
+      <span class="label">Status:</span>
+      <span class="val">In Entwicklung / Internal R&amp;D</span>
+    </div>
+    <div class="metric-badge">
+      <span class="label">Vollständige Benchmarks:</span>
+      <span class="val">folgen mit Profiler-Daten</span>
     </div>
   </article>
 </main>
+
+<footer>
+  <div class="container">
+    © 2026 Vortex Tech. Internes R&amp;D-Projekt — kein Kundenauftrag.
+  </div>
+</footer>
 
 </body>
 </html>
