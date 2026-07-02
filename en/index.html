@@ -301,6 +301,71 @@
     margin-top: 4px;
   }
 
+  /* ---------- IDEA-TO-FOUNDATION BRIDGE SECTION ---------- */
+  .bridge {
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .bridge-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .bridge-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .bridge-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-3px);
+  }
+
+  .bridge-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    margin-bottom: 18px;
+  }
+
+  .bridge-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .bridge-card p {
+    color: var(--text-dim);
+    font-size: 0.93rem;
+    margin-bottom: 24px;
+    flex-grow: 1;
+  }
+
+  .bridge-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+    transition: gap 0.2s ease;
+  }
+
+  .bridge-link:hover { gap: 10px; }
+
+  .bridge-cta {
+    margin-top: 48px;
+    text-align: center;
+  }
+
   /* ---------- SECTION HEADERS ---------- */
   .section-head {
     max-width: 640px;
@@ -734,6 +799,7 @@
     .proof-cards { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
     .hero-stats { grid-template-columns: 1fr; }
+    .bridge-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 720px) {
@@ -755,21 +821,22 @@
 
 <header>
   <nav>
-    <a href="#" class="logo" aria-label="Vortex Tech home">
+    <a href="../index.html" class="logo" aria-label="Vortex Tech Home">
       <span class="logo-mark">V</span>
       VORTEX<span class="dim">TECH</span>
     </a>
     <div class="nav-right">
       <div class="nav-links">
         <a href="#services">Services</a>
+        <a href="services.html">Websites</a>
         <a href="#proof">Projects</a>
-        <a href="#contact">Contact</a>
+        <a href="#kontakt">Contact</a>
       </div>
       <div class="lang-switch" aria-label="Select language">
         <a href="../index.html">DE</a>
         <a href="#" class="active" aria-current="page">EN</a>
       </div>
-      <a href="#contact" class="nav-cta">Start a project</a>
+      <a href="#kontakt" class="nav-cta">Request project</a>
     </div>
   </nav>
 </header>
@@ -783,16 +850,16 @@
         <span class="eyebrow">Available for new projects</span>
         <h1 class="hero-title">High-Performance<br><span class="accent-text">Software Engineering.</span></h1>
         <p class="hero-sub">
-          Vortex Tech builds resilient backend systems, optimized databases, and robust automation solutions —
-          engineered on C#/.NET and SQL, with one clear standard: every solution has to be measurably better
-          than the problem it replaces.
+          Vortex Tech builds resilient backend systems, optimized databases, and robust automation
+          solutions — developed with C#/.NET and SQL, with one clear standard: every solution must
+          be measurably better than the problem it replaces.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn-primary">
-            Discuss a project
+          <a href="#kontakt" class="btn-primary">
+            Discuss project
           </a>
           <a href="#proof" class="btn-secondary">
-            View engineering proof
+            See engineering proof
           </a>
         </div>
         <div class="hero-stats">
@@ -819,18 +886,18 @@
       <div class="about-grid">
         <div class="about-text">
           <span class="section-tag">About Vortex Tech</span>
-          <h2 class="section-title" style="margin-bottom: 22px;">One studio, one lead engineer, full accountability.</h2>
+          <h2 class="section-title" style="margin-bottom: 22px;">One studio, one person, full accountability.</h2>
           <p>
-            <strong>Vortex Tech</strong> is my freelance studio for custom software, automation, and database
-            engineering. I stand behind every project personally — <strong>no handoff to anonymous
-            subcontractors, no black box.</strong> I operate as a studio because professional process, clean
-            documentation, and clear communication are part of the offering from day one.
+            <strong>Vortex Tech</strong> is my freelance studio for custom software, automation, and
+            database engineering. I stand behind every project personally — <strong>no handing off to
+            anonymous subcontractors, no black box.</strong> I operate as a studio because professional
+            process, clean documentation, and clear communication are part of the offering from day one.
           </p>
           <p>
-            My focus is on contract development in the C#/.NET and SQL space — from backend APIs to database
-            migrations, automation tools, and CLI utilities that eliminate manual work. In parallel, I develop
-            my own Steam title in Unity as an internal R&amp;D project — a performance showcase that demonstrates
-            how deep our code-optimization expertise runs.
+            My focus is contract development in the C#/.NET and SQL space — from backend APIs to
+            database migrations to automation tools and CLI utilities that eliminate manual work.
+            In parallel, I'm developing my own Steam title in Unity as an internal R&amp;D project —
+            a performance showcase demonstrating how deep our code-optimization expertise runs.
           </p>
         </div>
         <div class="founder-card">
@@ -842,8 +909,8 @@
             </div>
           </div>
           <p class="founder-quote">
-            "I don't ship showcase code. Every solution I build has to measurably solve a concrete problem
-            better than before — with numbers to prove it."
+            "I don't deliver showcase code. Every solution I build has to measurably solve a
+            concrete problem better than before — with numbers to prove it."
           </p>
         </div>
       </div>
@@ -855,8 +922,8 @@
           </div>
           <h3>Backend &amp; APIs</h3>
           <p>
-            Robust, thoroughly tested backend systems in C#/.NET — from REST APIs to asynchronous processing
-            pipelines to custom software built exactly for your use case.
+            Robust, well-tested backend systems in C#/.NET — from REST APIs to asynchronous
+            processing pipelines to custom software built exactly around your use case.
           </p>
           <div class="service-tags">
             <span>C# / .NET</span>
@@ -871,8 +938,8 @@
           </div>
           <h3>Database Optimization</h3>
           <p>
-            Data migrations, schema design, and query tuning for SQL databases. Execution-plan analysis instead
-            of guesswork — results backed by before/after metrics.
+            Data migrations, schema design, and query tuning for SQL databases. Execution-plan
+            analysis instead of guesswork — results backed by before/after metrics.
           </p>
           <div class="service-tags">
             <span>SQL Server</span>
@@ -887,15 +954,65 @@
           </div>
           <h3>Automation &amp; CLI Tools</h3>
           <p>
-            Robust terminal tools and scripting solutions that automate recurring workflows — reliable,
-            well-documented, and built without unnecessary dependencies.
+            Robust terminal tools and scripting solutions that automate recurring workflows —
+            reliable, well-documented, and built without unnecessary dependencies.
           </p>
           <div class="service-tags">
             <span>CLI Tools</span>
             <span>Scripting</span>
-            <span>Workflow Automation</span>
+            <span>Workflow Optimization</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= IDEA-TO-FOUNDATION BRIDGE ================= -->
+  <section class="bridge" id="webseiten">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">From idea to implementation</span>
+        <h2 class="section-title">You have the idea — I build the foundation.</h2>
+        <p class="section-desc">
+          Whether it's an online store, a tradesperson's site, or a modern landing page —
+          every website is built individually from the ground up. No builder, no off-the-shelf template.
+        </p>
+      </div>
+
+      <div class="bridge-grid">
+        <div class="bridge-card">
+          <span class="bridge-num">01</span>
+          <h3>Online Store</h3>
+          <p>
+            Fast, secure checkout flows without plugin sprawl — built for maximum conversion
+            instead of abandoned carts.
+          </p>
+          <a href="services.html#vorlagen" class="bridge-link">Learn more →</a>
+        </div>
+
+        <div class="bridge-card">
+          <span class="bridge-num">02</span>
+          <h3>Tradespeople &amp; Local Businesses</h3>
+          <p>
+            Maximum visibility on Google, blazing-fast mobile load times, and effortless
+            contact for your customers.
+          </p>
+          <a href="services.html#vorlagen" class="bridge-link">Learn more →</a>
+        </div>
+
+        <div class="bridge-card">
+          <span class="bridge-num">03</span>
+          <h3>Landing Pages &amp; Portfolios</h3>
+          <p>
+            Refined, interactive design for service providers and agencies with measurable
+            lead generation instead of interchangeable templates.
+          </p>
+          <a href="services.html#vorlagen" class="bridge-link">Learn more →</a>
+        </div>
+      </div>
+
+      <div class="bridge-cta">
+        <a href="services.html" class="btn-primary">See all website templates</a>
       </div>
     </div>
   </section>
@@ -904,11 +1021,11 @@
   <section class="proof" id="proof">
     <div class="container">
       <div class="section-head">
-        <span class="section-tag">Engineering Proof</span>
-        <h2 class="section-title">Problem → Solution, backed by numbers.</h2>
+        <span class="section-tag">Engineering-Nachweis</span>
+        <h2 class="section-title">Problem → Lösung, mit Zahlen belegt.</h2>
         <p class="section-desc">
-          Not an abstract portfolio — concrete technical problems and their measured solutions.
-          Each example below links to a full case study with code, context, and metrics.
+          Kein abstraktes Portfolio, sondern konkrete technische Probleme und ihre gemessenen Lösungen.
+          Jedes Beispiel unten führt zu einer vollständigen Case Study mit Code, Kontext und Metriken.
         </p>
       </div>
 
@@ -919,18 +1036,18 @@
             <span class="proof-stack">C# / .NET</span>
             <span class="proof-status">Case Study #1</span>
           </div>
-          <h3>Async Deadlock via .Result / .Wait()</h3>
-          <p class="proof-desc">Sync-over-async blocks the synchronization context and freezes production requests.</p>
+          <h3>Async Deadlock durch .Result / .Wait()</h3>
+          <p class="proof-desc">Sync-over-Async blockiert den Synchronisationskontext und friert Produktionsanfragen ein.</p>
           <div class="proof-diff">
             <div class="diff-row bad"><span class="marker">✕</span><span>var result = FetchDataAsync().Result;</span></div>
             <div class="diff-row good"><span class="marker">✓</span><span>var result = await FetchDataAsync();</span></div>
           </div>
           <div class="proof-metric">
-            <span class="metric-label">P99 latency after fix</span>
+            <span class="metric-label">P99-Latenz nach Fix</span>
             <span class="metric-val">&lt; 120 ms</span>
           </div>
           <div class="proof-link">
-            <a href="projects/csharp.html">Read case study →</a>
+            <a href="projects/csharp.html">Case Study lesen →</a>
           </div>
         </div>
 
@@ -940,18 +1057,18 @@
             <span class="proof-stack">C# / EF Core</span>
             <span class="proof-status">Case Study #2</span>
           </div>
-          <h3>N+1 Query Problem with EF Core</h3>
-          <p class="proof-desc">Naive lazy loading generates 1,001 individual database queries for 1,000 records.</p>
+          <h3>N+1-Query-Problem mit EF Core</h3>
+          <p class="proof-desc">Naives Lazy Loading erzeugt bei 1.000 Datensätzen 1.001 einzelne Datenbankabfragen.</p>
           <div class="proof-diff">
-            <div class="diff-row bad"><span class="marker">✕</span><span>1,001 queries — 4.2s runtime</span></div>
-            <div class="diff-row good"><span class="marker">✓</span><span>.Include().AsNoTracking() — 1 query</span></div>
+            <div class="diff-row bad"><span class="marker">✕</span><span>1.001 Queries — 4,2 s Laufzeit</span></div>
+            <div class="diff-row good"><span class="marker">✓</span><span>.Include().AsNoTracking() — 1 Query</span></div>
           </div>
           <div class="proof-metric">
-            <span class="metric-label">Performance gain</span>
-            <span class="metric-val">110× faster</span>
+            <span class="metric-label">Performance-Gewinn</span>
+            <span class="metric-val">110× schneller</span>
           </div>
           <div class="proof-link">
-            <a href="projects/csharp.html">Read case study →</a>
+            <a href="projects/csharp.html">Case Study lesen →</a>
           </div>
         </div>
 
@@ -961,18 +1078,18 @@
             <span class="proof-stack">SQL</span>
             <span class="proof-status">Case Study #3</span>
           </div>
-          <h3>Composite Index vs. Full Table Scan</h3>
-          <p class="proof-desc">Missing index on filter columns forces a full table scan across 2.4M rows.</p>
+          <h3>Composite Index gegen Full Table Scan</h3>
+          <p class="proof-desc">Fehlender Index auf Filterspalten erzwingt bei 2,4 Mio. Zeilen einen vollständigen Table Scan.</p>
           <div class="proof-diff">
-            <div class="diff-row bad"><span class="marker">✕</span><span>Table scan — 2,400,000 reads / 4,800 ms</span></div>
-            <div class="diff-row good"><span class="marker">✓</span><span>Index seek — 12 reads / 2 ms</span></div>
+            <div class="diff-row bad"><span class="marker">✕</span><span>Table Scan — 2.400.000 Reads / 4.800 ms</span></div>
+            <div class="diff-row good"><span class="marker">✓</span><span>Index Seek — 12 Reads / 2 ms</span></div>
           </div>
           <div class="proof-metric">
-            <span class="metric-label">Performance gain</span>
-            <span class="metric-val">2400× faster</span>
+            <span class="metric-label">Performance-Gewinn</span>
+            <span class="metric-val">2400× schneller</span>
           </div>
           <div class="proof-link">
-            <a href="projects/sql.html">Read case study →</a>
+            <a href="projects/sql.html">Case Study lesen →</a>
           </div>
         </div>
 
@@ -983,23 +1100,23 @@
             <span class="proof-status">Case Study #4</span>
           </div>
           <h3>Unity ECS vs. MonoBehaviour Performance</h3>
-          <p class="proof-desc">Internal R&amp;D project: a performance comparison for our own Steam title, not a client engagement.</p>
+          <p class="proof-desc">Internes R&amp;D-Projekt: Performance-Vergleich für unseren eigenen Steam-Titel, nicht als Kundenauftrag.</p>
           <div class="proof-diff">
-            <div class="diff-row bad"><span class="marker">✕</span><span>MonoBehaviour — frame drops at scale</span></div>
-            <div class="diff-row good"><span class="marker">✓</span><span>ECS + Burst Compiler — stable frametimes</span></div>
-            <div class="diff-row info"><span class="marker">i</span><span>Showcase for our code-optimization expertise</span></div>
+            <div class="diff-row bad"><span class="marker">✕</span><span>MonoBehaviour — Frame-Einbrüche bei Skalierung</span></div>
+            <div class="diff-row good"><span class="marker">✓</span><span>ECS + Burst Compiler — stabile Frametimes</span></div>
+            <div class="diff-row info"><span class="marker">i</span><span>Showcase für unser Code-Optimierungs-Know-how</span></div>
           </div>
           <div class="proof-metric">
             <span class="metric-label">Status</span>
-            <span class="metric-val">In Development / Internal R&amp;D</span>
+            <span class="metric-val">In Entwicklung / Internal R&amp;D</span>
           </div>
           <div class="proof-link">
-            <a href="projects/unity.html">Read case study →</a>
+            <a href="projects/unity.html">Case Study lesen →</a>
           </div>
         </div>
       </div>
 
-      <p class="proof-note">Full case studies with code, execution plans, and benchmarks coming soon.</p>
+      <p class="proof-note">Vollständige Case Studies mit Code, Execution-Plänen und Benchmarks folgen in Kürze.</p>
     </div>
   </section>
 
@@ -1008,18 +1125,18 @@
     <div class="container">
       <div class="cta-box">
         <div>
-          <h2>A concrete problem in your backend, database, or automation?</h2>
-          <p>Let's have a short conversation to figure out if and how Vortex Tech can build the right solution.</p>
+          <h2>Ein konkretes Problem im Backend, in der Datenbank oder in der Automatisierung?</h2>
+          <p>Lass uns in einem kurzen Gespräch klären, ob und wie Vortex Tech die passende Lösung dafür baut.</p>
         </div>
-        <a href="#contact" class="btn-primary">Get in touch</a>
+        <a href="#kontakt" class="btn-primary">Jetzt Kontakt aufnehmen</a>
       </div>
     </div>
   </section>
 
 </main>
 
-<!-- ================= FOOTER / CONTACT ================= -->
-<footer id="contact">
+<!-- ================= FOOTER / KONTAKT ================= -->
+<footer id="kontakt">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
@@ -1028,19 +1145,19 @@
           VORTEX<span class="dim">TECH</span>
         </a>
         <p>
-          High-performance software engineering for businesses that need measurable technical solutions —
-          no buzzwords, just resilient code.
+          High-Performance Software Engineering für Unternehmen, die messbare technische Lösungen suchen —
+          keine Buzzwords, sondern belastbarer Code.
         </p>
       </div>
 
       <div class="footer-col">
-        <h4>Contact</h4>
+        <h4>Kontakt</h4>
         <div class="footer-contact-item">
           <span class="ico" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
           </span>
           <div>
-            <span class="contact-label">Email</span>
+            <span class="contact-label">E-Mail</span>
             <a href="mailto:vortextech.systems@gmail.com">vortextech.systems@gmail.com</a>
           </div>
         </div>
@@ -1049,7 +1166,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
           </span>
           <div>
-            <span class="contact-label">Phone</span>
+            <span class="contact-label">Telefon</span>
             <span class="value">+49 XXX XXXXXXX</span>
           </div>
         </div>
@@ -1059,24 +1176,25 @@
           </span>
           <div>
             <span class="contact-label">GitHub</span>
-            <a href="github.com/vortextechsystems" target="_blank" rel="noopener">github.com/vortextechsystems/</a>
+            <a href="github.com/vortextechsystems/" target="_blank" rel="noopener">github.com/vortextechsystems/</a>
           </div>
         </div>
       </div>
 
       <div class="footer-col footer-links">
-        <h4>Pages</h4>
+        <h4>Seiten</h4>
         <a href="#services">Services</a>
-        <a href="#proof">Engineering Proof</a>
-        <a href="projects/csharp.html">C# Projects</a>
-        <a href="projects/sql.html">SQL Projects</a>
+        <a href="services.html">Webseiten &amp; Programme</a>
+        <a href="#proof">Engineering-Nachweis</a>
+        <a href="projects/csharp.html">C#-Projekte</a>
+        <a href="projects/sql.html">SQL-Projekte</a>
         <a href="projects/unity.html">Internal R&amp;D</a>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 Vortex Tech — Vanshraj Singh. All rights reserved.</span>
-      <span class="status-dot">Available for new projects</span>
+      <span>© 2026 Vortex Tech — Vanshraj Singh. Alle Rechte vorbehalten.</span>
+      <span class="status-dot">Verfügbar für neue Projekte</span>
     </div>
   </div>
 </footer>
