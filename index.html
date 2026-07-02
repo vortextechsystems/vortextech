@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vortex Tech — High-Performance Software Engineering</title>
-<meta name="description" content="Vortex Tech: Freelance-Studio für C#/.NET Backend-Entwicklung, SQL-Datenbankoptimierung und maßgeschneiderte Webauftritte. Engineering-Nachweis statt Buzzwords.">
+<meta name="description" content="Vortex Tech: Freelance-Studio für C#/.NET Backend-Entwicklung, SQL-Datenbankoptimierung und Automatisierung. Engineering-Nachweis statt Buzzwords.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -88,6 +88,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 24px;
   }
 
   .logo {
@@ -114,6 +115,12 @@
 
   .logo span.dim { color: var(--text-dim); font-weight: 500; }
 
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
   .nav-links {
     display: flex;
     gap: 36px;
@@ -124,6 +131,32 @@
 
   .nav-links a { transition: color 0.2s ease; }
   .nav-links a:hover { color: var(--text); }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    padding: 4px 6px;
+  }
+
+  .lang-switch a {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--text-faint);
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .lang-switch a:hover { color: var(--text); }
+
+  .lang-switch a.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
 
   .nav-cta {
     padding: 9px 20px;
@@ -142,8 +175,6 @@
     color: var(--bg);
     box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
   }
-
-  .nav-toggle-label { display: none; }
 
   /* ---------- HERO ---------- */
   .hero {
@@ -452,6 +483,8 @@
 
   .proof-card:hover { border-color: var(--border-bright); }
 
+  .proof-card.rd-card { border-color: rgba(34, 211, 238, 0.2); }
+
   .proof-head {
     padding: 22px 26px 0;
     display: flex;
@@ -508,6 +541,7 @@
 
   .diff-row.bad { background: var(--danger-soft); color: #fca5a5; }
   .diff-row.good { background: var(--success-soft); color: #6ee7b7; }
+  .diff-row.info { background: var(--accent-soft); color: #a5f3fc; }
 
   .diff-row .marker { flex-shrink: 0; opacity: 0.8; }
 
@@ -725,12 +759,18 @@
       <span class="logo-mark">V</span>
       VORTEX<span class="dim">TECH</span>
     </a>
-    <div class="nav-links">
-      <a href="#services">Services</a>
-      <a href="#proof">Projekte</a>
-      <a href="#kontakt">Kontakt</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#proof">Projekte</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+      <div class="lang-switch" aria-label="Sprache wählen">
+        <a href="#" class="active" aria-current="page">DE</a>
+        <a href="en/index.html">EN</a>
+      </div>
+      <a href="#kontakt" class="nav-cta">Projekt anfragen</a>
     </div>
-    <a href="#kontakt" class="nav-cta">Projekt anfragen</a>
   </nav>
 </header>
 
@@ -743,7 +783,7 @@
         <span class="eyebrow">Verfügbar für neue Projekte</span>
         <h1 class="hero-title">High-Performance<br><span class="accent-text">Software Engineering.</span></h1>
         <p class="hero-sub">
-          Vortex Tech baut belastbare Backend-Systeme, optimierte Datenbanken und maßgeschneiderte Webauftritte —
+          Vortex Tech baut belastbare Backend-Systeme, optimierte Datenbanken und robuste Automatisierungslösungen —
           entwickelt auf Basis von C#/.NET und SQL, mit einem klaren Anspruch: jede Lösung muss messbar besser sein
           als das Problem, das sie ersetzt.
         </p>
@@ -787,10 +827,10 @@
             Prozesse, saubere Dokumentation und klare Kommunikation von Anfang an Teil des Angebots sind.
           </p>
           <p>
-            Mein Fokus liegt zu 80 % auf Auftragsentwicklung im C#/.NET- und SQL-Umfeld — von Backend-APIs
-            über Automatisierungstools bis zu kompletten Webauftritten von Grund auf. Die übrigen 20 % fließen
-            in die Entwicklung eines eigenen Steam-Titels mit Unity, wodurch Performance-Denken auch im
-            Game-Engineering geschärft wird.
+            Mein Fokus liegt auf Auftragsentwicklung im C#/.NET- und SQL-Umfeld — von Backend-APIs über
+            Datenbankmigrationen bis zu Automatisierungstools und CLI-Werkzeugen, die manuelle Arbeit eliminieren.
+            Parallel entwickle ich als internes R&amp;D-Projekt einen eigenen Steam-Titel mit Unity — ein
+            Performance-Showcase, der zeigt, wie tief unser Code-Optimierungs-Know-how reicht.
           </p>
         </div>
         <div class="founder-card">
@@ -816,7 +856,7 @@
           <h3>Backend &amp; APIs</h3>
           <p>
             Robuste, gut getestete Backend-Systeme in C#/.NET — von REST-APIs über asynchrone
-            Verarbeitungspipelines bis zu Automatisierungstools, die manuelle Arbeit eliminieren.
+            Verarbeitungspipelines bis zu Individualsoftware, die exakt auf Ihren Anwendungsfall zugeschnitten ist.
           </p>
           <div class="service-tags">
             <span>C# / .NET</span>
@@ -843,17 +883,17 @@
 
         <div class="service-card">
           <div class="service-icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 18v3m8-3v3"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
           </div>
-          <h3>Webauftritte &amp; Tools</h3>
+          <h3>Automatisierung &amp; CLI-Tools</h3>
           <p>
-            Maßgeschneiderte Websites und interne Tools von null auf entwickelt — ohne Baukasten-Kompromisse,
-            performant, wartbar und exakt auf den Anwendungsfall zugeschnitten.
+            Robuste Terminal-Tools und Scripting-Lösungen, die wiederkehrende Arbeitsabläufe automatisieren —
+            zuverlässig, gut dokumentiert und ohne unnötige Abhängigkeiten gebaut.
           </p>
           <div class="service-tags">
-            <span>Custom Builds</span>
-            <span>Automatisierung</span>
-            <span>Von Grund auf</span>
+            <span>CLI-Tools</span>
+            <span>Scripting</span>
+            <span>Workflow-Optimierung</span>
           </div>
         </div>
       </div>
@@ -936,21 +976,22 @@
           </div>
         </div>
 
-        <!-- Card 4: Unity ECS -->
-        <div class="proof-card">
+        <!-- Card 4: Unity ECS — Internal R&D -->
+        <div class="proof-card rd-card">
           <div class="proof-head">
-            <span class="proof-stack">Unity / C#</span>
+            <span class="proof-stack">Unity / C# · Internal R&amp;D</span>
             <span class="proof-status">Case Study #4</span>
           </div>
           <h3>Unity ECS vs. MonoBehaviour Performance</h3>
-          <p class="proof-desc">Datenorientiertes ECS-Design im Vergleich zu klassischem MonoBehaviour bei hoher Entity-Last.</p>
+          <p class="proof-desc">Internes R&amp;D-Projekt: Performance-Vergleich für unseren eigenen Steam-Titel, nicht als Kundenauftrag.</p>
           <div class="proof-diff">
             <div class="diff-row bad"><span class="marker">✕</span><span>MonoBehaviour — Frame-Einbrüche bei Skalierung</span></div>
             <div class="diff-row good"><span class="marker">✓</span><span>ECS + Burst Compiler — stabile Frametimes</span></div>
+            <div class="diff-row info"><span class="marker">i</span><span>Showcase für unser Code-Optimierungs-Know-how</span></div>
           </div>
           <div class="proof-metric">
             <span class="metric-label">Status</span>
-            <span class="metric-val">In Vorbereitung</span>
+            <span class="metric-val">In Entwicklung / Internal R&amp;D</span>
           </div>
           <div class="proof-link">
             <a href="projects/unity.html">Case Study lesen →</a>
@@ -967,7 +1008,7 @@
     <div class="container">
       <div class="cta-box">
         <div>
-          <h2>Ein konkretes Problem im Backend, in der Datenbank oder im Web-Auftritt?</h2>
+          <h2>Ein konkretes Problem im Backend, in der Datenbank oder in der Automatisierung?</h2>
           <p>Lass uns in einem kurzen Gespräch klären, ob und wie Vortex Tech die passende Lösung dafür baut.</p>
         </div>
         <a href="#kontakt" class="btn-primary">Jetzt Kontakt aufnehmen</a>
@@ -1000,7 +1041,7 @@
           </span>
           <div>
             <span class="contact-label">E-Mail</span>
-            <a href="mailto:vortextech.dev@gmail.com">vortextech.systems@gmail.com</a>
+            <a href="mailto:vortextech.systems@gmail.com">vortextech.systems@gmail.com</a>
           </div>
         </div>
         <div class="footer-contact-item">
@@ -1018,7 +1059,7 @@
           </span>
           <div>
             <span class="contact-label">GitHub</span>
-            <a href="https://github.com/vortex-tech" target="_blank" rel="noopener">github.com/vortextechsystems/</a>
+            <a href="github.com/vortextechsystems" target="_blank" rel="noopener">github.com/vortextechsystems/</a>
           </div>
         </div>
       </div>
@@ -1027,9 +1068,9 @@
         <h4>Seiten</h4>
         <a href="#services">Services</a>
         <a href="#proof">Engineering-Nachweis</a>
-        <a href="vortextechsystems.github.io/vortextech/projects/csharp.html">C#-Projekte</a>
-        <a href="vortextechsystems.github.io/vortextech/projects/sql.html">SQL-Projekte</a>
-        <a href="vortextechsystems.github.io/vortextech/projects/unity.html">Unity-Projekte</a>
+        <a href="projects/csharp.html">C#-Projekte</a>
+        <a href="projects/sql.html">SQL-Projekte</a>
+        <a href="projects/unity.html">Internal R&amp;D</a>
       </div>
     </div>
 
