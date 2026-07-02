@@ -301,6 +301,71 @@
     margin-top: 4px;
   }
 
+  /* ---------- IDEA-TO-FOUNDATION BRIDGE SECTION ---------- */
+  .bridge {
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .bridge-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .bridge-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .bridge-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-3px);
+  }
+
+  .bridge-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    margin-bottom: 18px;
+  }
+
+  .bridge-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .bridge-card p {
+    color: var(--text-dim);
+    font-size: 0.93rem;
+    margin-bottom: 24px;
+    flex-grow: 1;
+  }
+
+  .bridge-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+    transition: gap 0.2s ease;
+  }
+
+  .bridge-link:hover { gap: 10px; }
+
+  .bridge-cta {
+    margin-top: 48px;
+    text-align: center;
+  }
+
   /* ---------- SECTION HEADERS ---------- */
   .section-head {
     max-width: 640px;
@@ -734,6 +799,7 @@
     .proof-cards { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
     .hero-stats { grid-template-columns: 1fr; }
+    .bridge-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 720px) {
@@ -762,6 +828,7 @@
     <div class="nav-right">
       <div class="nav-links">
         <a href="#services">Services</a>
+        <a href="services.html">Webseiten</a>
         <a href="#proof">Projekte</a>
         <a href="#kontakt">Kontakt</a>
       </div>
@@ -776,7 +843,6 @@
 
 <main>
 
-  <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="container">
       <div class="hero-inner">
@@ -813,7 +879,6 @@
     </div>
   </section>
 
-  <!-- ================= ABOUT / SERVICES ================= -->
   <section class="about" id="services">
     <div class="container">
       <div class="about-grid">
@@ -900,7 +965,55 @@
     </div>
   </section>
 
-  <!-- ================= ENGINEERING PROOF ================= -->
+  <section class="bridge" id="webseiten">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Von der Idee zum Fundament</span>
+        <h2 class="section-title">Du hast die Idee — ich baue das Fundament.</h2>
+        <p class="section-desc">
+          Ob Online-Shop, Handwerkerseite oder moderne Landingpage —
+          jede Website wird von Grund auf individuell gebaut. Kein Baukasten, kein Standard-Template.
+        </p>
+      </div>
+
+      <div class="bridge-grid">
+        <div class="bridge-card">
+          <span class="bridge-num">01</span>
+          <h3>Online-Shops</h3>
+          <p>
+            Schnelle, sichere Checkout-Prozesse ohne Plugin-Chaos — gebaut für maximale Conversion
+            statt abgebrochener Warenkörbe.
+          </p>
+          <a href="projects/services.html" class="bridge-link">Mehr erfahren →</a>
+        </div>
+
+        <div class="bridge-card">
+          <span class="bridge-num">02</span>
+          <h3>Handwerk &amp; Lokale Unternehmen</h3>
+          <p>
+            Maximale Sichtbarkeit auf Google, blitzschnelle mobile Ladezeiten und eine mühelose
+            Kontaktaufnahme für deine Kunden.
+          </p>
+          <a href="projects/services.html" class="bridge-link">Mehr erfahren →</a>
+        </div>
+
+        <div class="bridge-card">
+          <span class="bridge-num">03</span>
+          <h3>Landingpages &amp; Portfolios</h3>
+          <p>
+            Ausgefeiltes, interaktives Design für Dienstleister und Agenturen mit messbarer
+            Lead-Generierung statt austauschbarer Templates.
+          </p>
+          <a href="projects/services.html" class="bridge-link">Mehr erfahren →</a>
+        </div>
+      </div>
+
+      <div class="bridge-cta">
+        <a href="projects/services.html" class="btn-primary">Alle Website-Templates ansehen</a>
+      </div>
+    </div>
+  </section>
+
   <section class="proof" id="proof">
     <div class="container">
       <div class="section-head">
@@ -913,7 +1026,6 @@
       </div>
 
       <div class="proof-cards">
-        <!-- Card 1: Async Deadlock -->
         <div class="proof-card">
           <div class="proof-head">
             <span class="proof-stack">C# / .NET</span>
@@ -934,7 +1046,6 @@
           </div>
         </div>
 
-        <!-- Card 2: EF Core N+1 -->
         <div class="proof-card">
           <div class="proof-head">
             <span class="proof-stack">C# / EF Core</span>
@@ -955,7 +1066,6 @@
           </div>
         </div>
 
-        <!-- Card 3: SQL Composite Index -->
         <div class="proof-card">
           <div class="proof-head">
             <span class="proof-stack">SQL</span>
@@ -976,7 +1086,6 @@
           </div>
         </div>
 
-        <!-- Card 4: Unity ECS — Internal R&D -->
         <div class="proof-card rd-card">
           <div class="proof-head">
             <span class="proof-stack">Unity / C# · Internal R&amp;D</span>
@@ -1003,7 +1112,6 @@
     </div>
   </section>
 
-  <!-- ================= CTA ================= -->
   <section class="cta-band">
     <div class="container">
       <div class="cta-box">
@@ -1018,7 +1126,6 @@
 
 </main>
 
-<!-- ================= FOOTER / KONTAKT ================= -->
 <footer id="kontakt">
   <div class="container">
     <div class="footer-grid">
@@ -1067,6 +1174,7 @@
       <div class="footer-col footer-links">
         <h4>Seiten</h4>
         <a href="#services">Services</a>
+        <a href="services.html">Webseiten &amp; Programme</a>
         <a href="#proof">Engineering-Nachweis</a>
         <a href="projects/csharp.html">C#-Projekte</a>
         <a href="projects/sql.html">SQL-Projekte</a>
