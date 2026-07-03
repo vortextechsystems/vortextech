@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SQL Database Optimization — Vortex Tech</title>
+<meta name="description" content="SQL performance case study: composite index vs. full table scan on 2.4M rows — execution plan analysis and measured results.">
+<link rel="canonical" href="https://vortextechsystems.github.io/vortextech/en/projects/sql.html">
+<link rel="alternate" hreflang="de" href="https://vortextechsystems.github.io/vortextech/projects/sql.html">
+<link rel="alternate" hreflang="x-default" href="https://vortextechsystems.github.io/vortextech/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL Database Optimization — Vortex Tech">
+<meta property="og:description" content="SQL performance case study: composite index vs. full table scan on 2.4M rows — execution plan analysis and measured results.">
+<meta property="og:url" content="https://vortextechsystems.github.io/vortextech/en/projects/sql.html">
+<meta property="og:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Vortex Tech">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SQL Database Optimization — Vortex Tech">
+<meta name="twitter:description" content="SQL performance case study: composite index vs. full table scan on 2.4M rows — execution plan analysis and measured results.">
+<meta name="twitter:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -90,6 +105,14 @@
   .code-header { padding: 8px 16px; font-size: 0.75rem; }
   .code-header.bad { background: var(--danger-soft); color: #fca5a5; }
   .code-header.good { background: var(--success-soft); color: #6ee7b7; }
+  .meta-box { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0 20px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; }
+  .meta-box .meta-item strong { display: block; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .meta-box .meta-item span { color: var(--text-dim); }
+  .analysis-box { margin: 16px 0 20px; padding-left: 14px; border-left: 2px solid var(--danger); }
+  .analysis-box p { color: var(--text-dim); }
+  .lessons-box { margin-top: 24px; padding: 18px 20px; background: var(--accent-soft); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: 8px; }
+  .lessons-box .section-subheading { margin-top: 0; color: var(--accent); }
+  .lessons-box p { color: var(--text-dim); margin: 0; }
   pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
 
   .metric-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--bg-alt); border: 1px solid var(--border-bright); padding: 12px 20px; border-radius: 8px; margin-top: 16px; }
@@ -138,6 +161,19 @@
       <strong>The problem:</strong> A query against a table with 2.4 million rows filtered on `Status` and `CreatedAt`. With no matching index in place, the database had to scan the entire table on every call (full table scan) to find matching results. This saturated the CPU and took nearly 5 seconds.
     </p>
 
+    <div class="meta-box">
+      <div class="meta-item"><strong>Environment</strong><span>SQL Server 2022, production database, 2.4M rows</span></div>
+      <div class="meta-item"><strong>Trigger</strong><span>Dashboard query with growing peak-hour user count</span></div>
+      <div class="meta-item"><strong>Constraint</strong><span>Index build allowed only outside business hours</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analysis</div>
+      <p>
+        Without a matching index, the database can only evaluate the <code>WHERE</code> clause by reading every single row — at 2.4M rows, that's a clustered index scan with correspondingly high I/O and CPU cost. A simple index on <code>Status</code> alone would barely have helped, since that column has low selectivity (only a handful of possible values). Only the combination of <code>Status</code> and <code>CreatedAt</code>, in the right column order, gives the B-tree the selectivity it needs.
+      </p>
+    </div>
+
     <div class="section-subheading">Baseline (no index / table scan)</div>
     <div class="code-box">
       <div class="code-header bad">✕ Execution plan: clustered index scan (2.4M reads, 4,800 ms)</div>
@@ -162,6 +198,13 @@ INCLUDE (CustomerNumber, Amount);</code></pre>
     <div class="metric-badge">
       <span class="label">Performance gain:</span>
       <span class="val">2400× faster (down to 2 ms)</span>
+    </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons learned</div>
+      <p>
+        Column order in a composite index isn't a formality — it directly determines whether the index can be used at all. As a rule of thumb, the most selective column, or the one most used in range queries, should generally come first. We now check the execution plan for every new high-frequency query before deployment, rather than waiting for users to report slowness.
+      </p>
     </div>
   </article>
 </main>

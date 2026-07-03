@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C# Case Studies — Vortex Tech</title>
+<meta name="description" content="Reale C#/.NET-Performance-Probleme und ihre gemessenen Lösungen: Async-Deadlocks und N+1-Queries mit Code-Vergleich, Kontext, Analyse und Metriken.">
+<link rel="canonical" href="https://vortextechsystems.github.io/vortextech/projects/csharp.html">
+<link rel="alternate" hreflang="en" href="https://vortextechsystems.github.io/vortextech/en/projects/csharp.html">
+<link rel="alternate" hreflang="x-default" href="https://vortextechsystems.github.io/vortextech/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="C# Case Studies — Vortex Tech">
+<meta property="og:description" content="Reale C#/.NET-Performance-Probleme und ihre gemessenen Lösungen: Async-Deadlocks und N+1-Queries mit Code-Vergleich, Kontext, Analyse und Metriken.">
+<meta property="og:url" content="https://vortextechsystems.github.io/vortextech/projects/csharp.html">
+<meta property="og:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Vortex Tech">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="C# Case Studies — Vortex Tech">
+<meta name="twitter:description" content="Reale C#/.NET-Performance-Probleme und ihre gemessenen Lösungen: Async-Deadlocks und N+1-Queries mit Code-Vergleich, Kontext, Analyse und Metriken.">
+<meta name="twitter:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -134,6 +149,14 @@
   .code-header { padding: 8px 16px; font-size: 0.75rem; font-family: var(--font-mono); border-bottom: 1px solid var(--border); }
   .code-header.bad { background: var(--danger-soft); color: #fca5a5; }
   .code-header.good { background: var(--success-soft); color: #6ee7b7; }
+  .meta-box { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0 20px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; }
+  .meta-box .meta-item strong { display: block; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .meta-box .meta-item span { color: var(--text-dim); }
+  .analysis-box { margin: 16px 0 20px; padding-left: 14px; border-left: 2px solid var(--danger); }
+  .analysis-box p { color: var(--text-dim); }
+  .lessons-box { margin-top: 24px; padding: 18px 20px; background: var(--accent-soft); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: 8px; }
+  .lessons-box .section-subheading { margin-top: 0; color: var(--accent); }
+  .lessons-box p { color: var(--text-dim); margin: 0; }
   pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
 
   .metric-badge {
@@ -192,6 +215,19 @@
       <strong>Das Problem:</strong> In einer Legacy-Anwendung blockierten synchrone Aufrufe von asynchronen Methoden (Sync-over-Async) den Thread-Pool. Unter hoher Last führte dies zu einem Deadlock des Synchronisationskontexts, wodurch alle nachfolgenden HTTP-Anfragen einfroren.
     </p>
 
+    <div class="meta-box">
+      <div class="meta-item"><strong>Umgebung</strong><span>ASP.NET Core 8, IIS, .NET Thread Pool</span></div>
+      <div class="meta-item"><strong>Auslöser</strong><span>Steigende Last in der Produktion, ~150 gleichzeitige Requests</span></div>
+      <div class="meta-item"><strong>Zeitrahmen</strong><span>Diagnose &amp; Fix innerhalb von 2 Arbeitstagen</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analyse</div>
+      <p>
+        Der Aufruf <code>.Result</code> blockiert den aufrufenden Thread, bis die Task abgeschlossen ist — läuft dieser Code aber innerhalb eines Synchronisationskontexts (z. B. ASP.NET Core Request-Kontext), versucht die asynchrone Methode nach ihrem <code>await</code> auf denselben Kontext zurückzukehren. Der blockierende Thread hält den Kontext jedoch fest, wodurch ein klassischer Deadlock entsteht. Das Problem ist im Entwicklungsbetrieb bei niedriger Last kaum sichtbar und eskaliert erst unter Produktionslast, was die Diagnose erschwert.
+      </p>
+    </div>
+
     <div class="section-subheading">Fehlerhafter Code (Blockierend)</div>
     <div class="code-box">
       <div class="code-header bad">✕ Anti-Pattern: Erzwingt synchrone Blockierung</div>
@@ -222,6 +258,13 @@
       <span class="label">P99-Latenz nach Fix:</span>
       <span class="val">&lt; 120 ms</span>
     </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons Learned</div>
+      <p>
+        Sync-over-Async lässt sich in Code-Reviews leicht übersehen, weil er syntaktisch korrekt ist und lokal meist funktioniert. Seitdem gilt bei uns eine feste Regel: <code>async</code> konsequent bis zum äußersten Aufrufer durchziehen ("async all the way") und <code>.Result</code> / <code>.Wait()</code> per Analyzer-Regel (z. B. <code>xUnit.Analyzers</code> / Roslyn-Analyzer) im Build hart blockieren, statt sich auf manuelle Reviews zu verlassen.
+      </p>
+    </div>
   </article>
 
   <!-- CASE STUDY 2 -->
@@ -234,6 +277,19 @@
     <p>
       <strong>Das Problem:</strong> Durch aktiviertes Lazy Loading generierte eine Abfrage für 1.000 Datensätze unbemerkt 1.001 separate SQL-Statements, da verknüpfte Entitäten innerhalb einer Schleife einzeln nachgeladen wurden. Die Datenbankverbindung wurde komplett überlastet.
     </p>
+
+    <div class="meta-box">
+      <div class="meta-item"><strong>Umgebung</strong><span>.NET 8, EF Core 8, SQL Server, Azure App Service</span></div>
+      <div class="meta-item"><strong>Auslöser</strong><span>Reporting-Endpoint mit wachsender Datenmenge</span></div>
+      <div class="meta-item"><strong>Constraint</strong><span>Keine Änderung am DB-Schema erlaubt, nur Query-Ebene</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analyse</div>
+      <p>
+        Lazy Loading wirkt im Code unauffällig — jeder einzelne Zugriff auf <code>c.Orders</code> sieht wie ein normaler Property-Zugriff aus, löst aber im Hintergrund eine eigene Datenbankabfrage aus. Bei einer Schleife über 1.000 Kunden entstehen so 1.000 zusätzliche Roundtrips zur Datenbank plus die ursprüngliche Abfrage. Die naive Lösung "mehr Verbindungen im Pool" hätte das Problem nur verschoben, da die Ursache in der Zugriffsmuster-Architektur liegt, nicht in der Verbindungskapazität.
+      </p>
+    </div>
 
     <div class="section-subheading">Fehlerhafter Code (Lazy Loading)</div>
     <div class="code-box">
@@ -262,6 +318,13 @@ var customers = _context.Customers
     <div class="metric-badge">
       <span class="label">Performance-Gewinn:</span>
       <span class="val">110× schneller</span>
+    </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons Learned</div>
+      <p>
+        N+1-Probleme entstehen fast immer schleichend, weil sie bei kleinen Testdatenmengen nicht auffallen. Seitdem gehört ein SQL-Statement-Zähler (z. B. via <code>DbCommandInterceptor</code>) zu unseren Integrationstests: Überschreitet ein Endpoint eine definierte Query-Grenze, schlägt der Test fehl — noch bevor der Code in die Produktion geht.
+      </p>
     </div>
   </article>
 </main>

@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unity Performance R&D — Vortex Tech</title>
+<meta name="description" content="Internal R&D: Unity ECS vs. MonoBehaviour Performance-Vergleich für unseren Steam-Titel — Profiler-Daten und Architektur-Entscheidungen.">
+<link rel="canonical" href="https://vortextechsystems.github.io/vortextech/projects/unity.html">
+<link rel="alternate" hreflang="en" href="https://vortextechsystems.github.io/vortextech/en/projects/unity.html">
+<link rel="alternate" hreflang="x-default" href="https://vortextechsystems.github.io/vortextech/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Unity Performance R&D — Vortex Tech">
+<meta property="og:description" content="Internal R&D: Unity ECS vs. MonoBehaviour Performance-Vergleich für unseren Steam-Titel — Profiler-Daten und Architektur-Entscheidungen.">
+<meta property="og:url" content="https://vortextechsystems.github.io/vortextech/projects/unity.html">
+<meta property="og:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Vortex Tech">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unity Performance R&D — Vortex Tech">
+<meta name="twitter:description" content="Internal R&D: Unity ECS vs. MonoBehaviour Performance-Vergleich für unseren Steam-Titel — Profiler-Daten und Architektur-Entscheidungen.">
+<meta name="twitter:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -104,6 +119,14 @@
   .code-header { padding: 8px 16px; font-size: 0.75rem; }
   .code-header.bad { background: var(--danger-soft); color: #fca5a5; }
   .code-header.good { background: var(--success-soft); color: #6ee7b7; }
+  .meta-box { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0 20px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; }
+  .meta-box .meta-item strong { display: block; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .meta-box .meta-item span { color: var(--text-dim); }
+  .analysis-box { margin: 16px 0 20px; padding-left: 14px; border-left: 2px solid var(--danger); }
+  .analysis-box p { color: var(--text-dim); }
+  .lessons-box { margin-top: 24px; padding: 18px 20px; background: var(--accent-soft); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: 8px; }
+  .lessons-box .section-subheading { margin-top: 0; color: var(--accent); }
+  .lessons-box p { color: var(--text-dim); margin: 0; }
   pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
 
   .metric-badge { display: inline-flex; align-items: center; gap: 12px; background: var(--bg-alt); border: 1px solid var(--border-bright); padding: 12px 20px; border-radius: 8px; margin-top: 16px; margin-right: 12px; }
@@ -184,6 +207,19 @@
       individuellen Speicher-Overhead und Cache-Misses verursacht.
     </p>
 
+    <div class="meta-box">
+      <div class="meta-item"><strong>Umgebung</strong><span>Unity 6, DOTS / Entities-Paket, Burst Compiler</span></div>
+      <div class="meta-item"><strong>Constraint</strong><span>Zielplattform PC, Ziel: stabile Frametimes bei 5.000+ Entities</span></div>
+      <div class="meta-item"><strong>Status</strong><span>Internal R&amp;D, laufende Weiterentwicklung</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analyse</div>
+      <p>
+        Jedes MonoBehaviour-GameObject verwaltet seinen Speicher individuell auf dem Heap, wodurch verwandte Daten (Position, Geschwindigkeit, Ziel) im RAM verstreut liegen. Bei tausenden Instanzen führt das zu häufigen Cache-Misses, da die CPU bei jedem Zugriff neue Speicherbereiche laden muss. Reines Multithreading auf MonoBehaviour-Ebene hätte das Problem nicht gelöst, da Unitys klassische GameObject-API nicht thread-safe ist — die eigentliche Lösung liegt in der Datenorganisation selbst, nicht nur in mehr Rechenkernen.
+      </p>
+    </div>
+
     <div class="section-subheading">Ausgangslage (MonoBehaviour)</div>
     <div class="code-box">
       <div class="code-header bad">✕ Objektorientiert: Jede Entity ist ein eigenes GameObject mit eigenem Speicherblock</div>
@@ -235,6 +271,13 @@ public partial struct EnemyMoveJob : IJobEntity
     <div class="metric-badge">
       <span class="label">Vollständige Benchmarks:</span>
       <span class="val">folgen mit Profiler-Daten</span>
+    </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons Learned</div>
+      <p>
+        Der Umstieg auf ECS ist kein reiner Performance-Trick, sondern verändert das gesamte Architektur-Denken — Logik und Daten werden konsequent getrennt, was zu Beginn ungewohnt ist, sich aber direkt in vorhersagbaren Frametimes auszahlt. Diese datenorientierte Denkweise deckt sich mit unserem Ansatz bei Backend- und Datenbank-Optimierungen: Zuerst verstehen, wie Daten tatsächlich im Speicher liegen und durchlaufen werden, dann erst optimieren.
+      </p>
     </div>
   </article>
 </main>

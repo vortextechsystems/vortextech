@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>C# Case Studies — Vortex Tech</title>
+<meta name="description" content="Real-world C#/.NET performance problems and their measured solutions: async deadlocks and N+1 queries with code comparison, context, analysis, and metrics.">
+<link rel="canonical" href="https://vortextechsystems.github.io/vortextech/en/projects/csharp.html">
+<link rel="alternate" hreflang="de" href="https://vortextechsystems.github.io/vortextech/projects/csharp.html">
+<link rel="alternate" hreflang="x-default" href="https://vortextechsystems.github.io/vortextech/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="C# Case Studies — Vortex Tech">
+<meta property="og:description" content="Real-world C#/.NET performance problems and their measured solutions: async deadlocks and N+1 queries with code comparison, context, analysis, and metrics.">
+<meta property="og:url" content="https://vortextechsystems.github.io/vortextech/en/projects/csharp.html">
+<meta property="og:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Vortex Tech">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="C# Case Studies — Vortex Tech">
+<meta name="twitter:description" content="Real-world C#/.NET performance problems and their measured solutions: async deadlocks and N+1 queries with code comparison, context, analysis, and metrics.">
+<meta name="twitter:image" content="https://vortextechsystems.github.io/vortextech/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -134,6 +149,14 @@
   .code-header { padding: 8px 16px; font-size: 0.75rem; font-family: var(--font-mono); border-bottom: 1px solid var(--border); }
   .code-header.bad { background: var(--danger-soft); color: #fca5a5; }
   .code-header.good { background: var(--success-soft); color: #6ee7b7; }
+  .meta-box { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0 20px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; }
+  .meta-box .meta-item strong { display: block; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .meta-box .meta-item span { color: var(--text-dim); }
+  .analysis-box { margin: 16px 0 20px; padding-left: 14px; border-left: 2px solid var(--danger); }
+  .analysis-box p { color: var(--text-dim); }
+  .lessons-box { margin-top: 24px; padding: 18px 20px; background: var(--accent-soft); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: 8px; }
+  .lessons-box .section-subheading { margin-top: 0; color: var(--accent); }
+  .lessons-box p { color: var(--text-dim); margin: 0; }
   pre { padding: 16px; background: var(--bg-alt); overflow-x: auto; color: #cbd5e1; }
 
   .metric-badge {
@@ -192,6 +215,19 @@
       <strong>The problem:</strong> In a legacy application, synchronous calls into asynchronous methods (sync-over-async) blocked the thread pool. Under high load, this caused the synchronization context to deadlock, freezing every subsequent HTTP request.
     </p>
 
+    <div class="meta-box">
+      <div class="meta-item"><strong>Environment</strong><span>ASP.NET Core 8, IIS, .NET thread pool</span></div>
+      <div class="meta-item"><strong>Trigger</strong><span>Rising production load, ~150 concurrent requests</span></div>
+      <div class="meta-item"><strong>Timeframe</strong><span>Diagnosis &amp; fix within 2 working days</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analysis</div>
+      <p>
+        Calling <code>.Result</code> blocks the calling thread until the task completes — but if this code runs inside a synchronization context (e.g. the ASP.NET Core request context), the async method tries to resume on that same context after its <code>await</code>. The blocking thread is holding that context, producing a classic deadlock. The issue is barely visible in development under low load and only escalates under production load, which makes it hard to diagnose.
+      </p>
+    </div>
+
     <div class="section-subheading">Faulty code (blocking)</div>
     <div class="code-box">
       <div class="code-header bad">✕ Anti-pattern: forces synchronous blocking</div>
@@ -222,6 +258,13 @@
       <span class="label">P99 latency after fix:</span>
       <span class="val">&lt; 120 ms</span>
     </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons learned</div>
+      <p>
+        Sync-over-async is easy to miss in code review because it's syntactically valid and often works fine locally. We now enforce a hard rule: keep <code>async</code> consistent all the way up to the outermost caller ("async all the way"), and block <code>.Result</code> / <code>.Wait()</code> via a Roslyn analyzer in the build pipeline instead of relying on manual review.
+      </p>
+    </div>
   </article>
 
   <!-- CASE STUDY 2 -->
@@ -234,6 +277,19 @@
     <p>
       <strong>The problem:</strong> With lazy loading enabled, a query for 1,000 records silently generated 1,001 separate SQL statements, because related entities were fetched individually inside a loop. The database connection was completely overloaded.
     </p>
+
+    <div class="meta-box">
+      <div class="meta-item"><strong>Environment</strong><span>.NET 8, EF Core 8, SQL Server, Azure App Service</span></div>
+      <div class="meta-item"><strong>Trigger</strong><span>Reporting endpoint with growing data volume</span></div>
+      <div class="meta-item"><strong>Constraint</strong><span>No schema changes allowed, query-level fix only</span></div>
+    </div>
+
+    <div class="analysis-box">
+      <div class="section-subheading">Analysis</div>
+      <p>
+        Lazy loading looks harmless in code — every access to <code>c.Orders</code> reads like a plain property access, but silently triggers its own database query. Looping over 1,000 customers therefore adds 1,000 extra roundtrips on top of the original query. The naive fix of "add more connections to the pool" would only have shifted the bottleneck, since the root cause sits in the access pattern itself, not in connection capacity.
+      </p>
+    </div>
 
     <div class="section-subheading">Faulty code (lazy loading)</div>
     <div class="code-box">
@@ -262,6 +318,13 @@ var customers = _context.Customers
     <div class="metric-badge">
       <span class="label">Performance gain:</span>
       <span class="val">110× faster</span>
+    </div>
+
+    <div class="lessons-box">
+      <div class="section-subheading">Lessons learned</div>
+      <p>
+        N+1 problems almost always creep in unnoticed, because they don't show up against small test datasets. We now track SQL statement counts in integration tests (via a <code>DbCommandInterceptor</code>): if an endpoint exceeds a defined query budget, the test fails before the code ever reaches production.
+      </p>
     </div>
   </article>
 </main>
